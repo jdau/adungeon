@@ -1,3 +1,8 @@
-import libtcodpy as lib
+import libtcodpy as libtcod
+from config import *
 
-print "Library"
+from game import *
+		
+adungeon=Game()
+adungeon.init_graphics()
+adungeon.game_loop()
