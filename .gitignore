@@ -1,4 +1,5 @@
 *.py[cod]
+annchrome.png
 
 # C extensions
 *.so
