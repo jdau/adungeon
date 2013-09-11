@@ -4,6 +4,7 @@ from config import *
 
 from overworld import *
 from screen import *
+from player import *
 
 class Game:
 
@@ -31,6 +32,9 @@ class Game:
 		libtcod.console_flush()
 		
 		world.create()
+		
+		player=AIPlayer()
+		world.playerStart(player)
 		
 		screens.clearCut()
 	
