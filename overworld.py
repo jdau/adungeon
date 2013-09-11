@@ -31,6 +31,7 @@ class OverworldTile:
 		self.blocked=blocked
 		
 	def isBlocked(self): return self.blocked
+	def isSeen(self): return self.seen
 	def gotSeen(self): self.seen=True
 		
 	def draw(self,console,offset_x,offset_y):
@@ -81,14 +82,18 @@ class Overworld:
 	
 	def render(self):
 		c=self.console
+		libtcod.console_clear(c)
 		wx=cfg.SCREEN_WIDTH
 		wy=cfg.SCREEN_HEIGHT
 		
 		self.playerReveal()
 		offset_x=self.player.x-(wx/2)
 		if offset_x+wx > self.width: offset_x=self.width-wx
+		if offset_x<0: offset_x=0
+		
 		offset_y=self.player.y-(wy/2)
 		if offset_y+wy > self.height: offset_y=self.height-wy
+		if offset_y<0: offset_y=0
 		
 		for x in xrange(wx):
 			for y in xrange(wy):
@@ -109,12 +114,14 @@ class Overworld:
 		for x in xrange(self.width):
 			for y in xrange(self.height):
 				if libtcod.map_is_in_fov(self.blockedMap, x, y):
+					self.player.setSeen(x,y)
 					self.level[x][y].gotSeen()
 	
 	def playerStart(self,player):
 		self.player=player
 		townPos=self.town.position()
 		self.player.setPosition(townPos[0],townPos[1])
+		self.player.newLevel(self)
 		
 	def buildBlockedMap(self):
 		bmap = libtcod.map_new(self.width,self.height)
@@ -127,6 +134,10 @@ class Overworld:
 					libtcod.map_set_properties(bmap,x,y,True,True)
 		
 		self.blockedMap=bmap
+		
+	def getBlockedMap(self): return self.blockedMap
+	def getPathable(self): return self.pathable
+	def hasSeen(self,x,y): return self.level[x][y].isSeen()
 		
 	def findPathable(self):
 		w=self.width

@@ -37,8 +37,12 @@ class Game:
 		world.playerStart(player)
 		
 		screens.clearCut()
+		cycles=0
 	
 		while not libtcod.console_is_window_closed(): 
+			
+			cycles=cycles+1
+			player.tick(world)
 			
 			screens.tick()
 			self.handle_keys()
