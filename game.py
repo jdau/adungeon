@@ -23,10 +23,16 @@ class Game:
 	def game_loop(self):
 		
 		world=Overworld()
+		screens=ScreenHandler(world)
+		screens.addTextCut("Generating world...",libtcod.green,libtcod.black)
+		
+		screens.tick()
+		self.handle_keys()
+		libtcod.console_flush()
+		
 		world.create()
 		
-		screens=ScreenHandler(world)
-		
+		screens.clearCut()
 	
 		while not libtcod.console_is_window_closed(): 
 			

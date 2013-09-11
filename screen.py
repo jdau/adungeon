@@ -1,30 +1,25 @@
 import libtcodpy as libtcod
 from config import *
 
-class Screen:
-	ref=None
-	entity_ref=None
+class TextScreen:
+	foreColor=None
+	clearColor=None
+	text=None
 	
-	scroll=False
-	tick=False
+	console=None
 	
-	x_dim=0
-	y_dim=0
+	def __init__(self,text,foreColor,clearColor):
+		self.console=libtcod.console_new(cfg.SCREEN_WIDTH,cfg.SCREEN_HEIGHT)
+		self.text=text
+		self.foreColor=foreColor
+		self.clearColor=clearColor
 	
-	def __init__(self,x,y):
-		self.x_dim=x
-		self.y_dim=y
-	
-	def render(self,console):
-		# Todo: Improve error handling
-		if not scroll: return
-		
-		for x in xrange(self.x_dim):
-			for y in xrange(self.y_dim):
-				self.ref[x][y].draw(console)
-				
-		for entity in self.entity_ref:
-			entity.draw(console)
+	def render(self):
+		libtcod.console_set_default_background(self.console,self.clearColor)
+		libtcod.console_set_default_foreground(self.console,self.foreColor)
+		libtcod.console_clear(self.console)
+		libtcod.console_print_ex(self.console, cfg.SCREEN_WIDTH/2, cfg.SCREEN_HEIGHT/3, libtcod.BKGND_NONE, libtcod.CENTER, self.text)
+		libtcod.console_blit(self.console,0,0,cfg.SCREEN_WIDTH,cfg.SCREEN_HEIGHT,0,0,0)
 			
 class ScreenHandler:
 	base=None
@@ -37,5 +32,14 @@ class ScreenHandler:
 		self.base=base
 		
 	def tick(self):
-		self.base.render()
+		if self.cut:
+			self.cut.render()
+		else:
+			self.base.render()
 			
+			
+	def addTextCut(self,text,forecol,backcol):
+		self.cut=TextScreen(text,forecol,backcol)
+	
+	def clearCut(self):
+		self.cut=None
