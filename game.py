@@ -41,10 +41,8 @@ class Game:
 	
 		while not libtcod.console_is_window_closed(): 
 			
-			cycles=cycles+1
-			player.tick(world)
-			
 			screens.tick()
+			player.tick(world)
 			self.handle_keys()
 			if self.shutdown: break
 			

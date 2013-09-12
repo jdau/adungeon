@@ -80,6 +80,8 @@ class Overworld:
 	tile_entity=[]
 	town=None
 	
+	def halfScreenWidth(self): return int(math.floor(cfg.SCREEN_WIDTH/2))
+	
 	def render(self):
 		c=self.console
 		libtcod.console_clear(c)
@@ -87,11 +89,11 @@ class Overworld:
 		wy=cfg.SCREEN_HEIGHT
 		
 		self.playerReveal()
-		offset_x=self.player.x-(wx/2)
+		offset_x=self.player.x-cfg.WID2
 		if offset_x+wx > self.width: offset_x=self.width-wx
 		if offset_x<0: offset_x=0
 		
-		offset_y=self.player.y-(wy/2)
+		offset_y=self.player.y-cfg.HGT2
 		if offset_y+wy > self.height: offset_y=self.height-wy
 		if offset_y<0: offset_y=0
 		
@@ -101,20 +103,22 @@ class Overworld:
 				
 		for entity in self.tile_entity:
 			pos=entity.position()
-			if self.level[pos[0]][pos[1]].seen: entity.draw(c,offset_x,offset_y)
+			#if self.level[pos[0]][pos[1]].seen: entity.draw(c,offset_x,offset_y)
+			entity.draw(c,offset_x,offset_y)
 				
 		self.player.draw(c,offset_x,offset_y)
 				
 		libtcod.console_blit(self.console,0,0,wx,wy,0,0,0)
 		
 	def playerReveal(self):
-		sight=30
-		libtcod.map_compute_fov(self.blockedMap,self.player.x,self.player.y,sight,True,libtcod.FOV_PERMISSIVE(2))
+		sight=20
+		libtcod.map_compute_fov(self.blockedMap,self.player.x,self.player.y,sight,True)
 		
-		for x in xrange(self.width):
-			for y in xrange(self.height):
+		wx=cfg.WID2
+		wy=cfg.HGT2
+		for x in xrange(self.player.x-wx,self.player.x+wx):
+			for y in xrange(self.player.y-wy,self.player.y+wy):
 				if libtcod.map_is_in_fov(self.blockedMap, x, y):
-					self.player.setSeen(x,y)
 					self.level[x][y].gotSeen()
 	
 	def playerStart(self,player):
@@ -135,9 +139,18 @@ class Overworld:
 		
 		self.blockedMap=bmap
 		
+	def getWidth(self): return self.width
+	def getHeight(self): return self.height
+	
 	def getBlockedMap(self): return self.blockedMap
 	def getPathable(self): return self.pathable
-	def hasSeen(self,x,y): return self.level[x][y].isSeen()
+	def isSeen(self,x,y): return self.level[x][y].isSeen()
+	def isBlocked(self,x,y): return self.level[x][y].isBlocked()
+	
+	def putThing(self,x,y): #debug
+		thing=OverworldTileEntity(x,y)
+		thing.setColors(libtcod.Color(random.randint(0,255), random.randint(0,255), random.randint(0,255)),libtcod.Color(0, 0, 0))
+		self.tile_entity.append(thing)
 		
 	def findPathable(self):
 		w=self.width
@@ -181,7 +194,7 @@ class Overworld:
 			for y in xrange(h):
 				zoom=0.09
 				f = [zoom * x,zoom * y]
-				val = -(libtcod.noise_get(noise2d,f))
+				val = libtcod.noise_get(noise2d,f)
 				c=60+int(((val+1)/2)*90)
 				c1=int((((val*-1)+1)/2)*30)
 				c2=10+int(((val+1)/2)*20)
