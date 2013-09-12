@@ -161,10 +161,6 @@ class AIPlayer:
 				return
 			self.path_progress=0
 		
-		#print self.goal, self.x,self.y,libtcod.path_size(self.path),self.path_progress
-		
-		#print "|{0:<{10}}|{1:<{4}}|{2:<{4}}|".format(self.goal,self.x)
-		
 		[next_x,next_y]=libtcod.path_get(self.path, self.path_progress)
 		self.x=next_x
 		self.y=next_y
