@@ -111,9 +111,9 @@ class Overworld:
 		libtcod.console_blit(self.console,0,0,wx,wy,0,0,0)
 		
 	def playerReveal(self):
-		sight=20
+		sight=15
 		libtcod.map_compute_fov(self.blockedMap,self.player.x,self.player.y,sight,True)
-		
+		self.level[self.player.x][self.player.y].gotSeen()
 		wx=cfg.WID2
 		wy=cfg.HGT2
 		for x in xrange(self.player.x-wx,self.player.x+wx):
@@ -144,11 +144,18 @@ class Overworld:
 	
 	def getBlockedMap(self): return self.blockedMap
 	def getPathable(self): return self.pathable
+	def isPathable(self,x,y): return (x,y) in self.pathable
 	def isSeen(self,x,y): return self.level[x][y].isSeen()
 	def isBlocked(self,x,y): return self.level[x][y].isBlocked()
 	
-	def putThing(self,x,y): #debug
+	def putThing(self,x,y,char="+"): #debug
+		rlist=copy.copy(self.tile_entity)
+		for e in rlist:
+			if e.position()==(x,y):
+				self.tile_entity.remove(e)
+				
 		thing=OverworldTileEntity(x,y)
+		thing.setChar(char)
 		thing.setColors(libtcod.Color(random.randint(0,255), random.randint(0,255), random.randint(0,255)),libtcod.Color(0, 0, 0))
 		self.tile_entity.append(thing)
 		

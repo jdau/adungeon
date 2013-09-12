@@ -20,6 +20,19 @@ class TextScreen:
 		libtcod.console_clear(self.console)
 		libtcod.console_print_ex(self.console, cfg.SCREEN_WIDTH/2, cfg.SCREEN_HEIGHT/3, libtcod.BKGND_NONE, libtcod.CENTER, self.text)
 		libtcod.console_blit(self.console,0,0,cfg.SCREEN_WIDTH,cfg.SCREEN_HEIGHT,0,0,0)
+		
+class ProgressScreen:
+	foreColor=None
+	clearColor=None
+	text=None
+	
+	duration=5
+	elapsed=0
+	
+	console=None
+	def __init__(self,text,duration):
+		pass
+	
 			
 class ScreenHandler:
 	base=None
