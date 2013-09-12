@@ -227,7 +227,7 @@ class Overworld:
 		
 		# Place dungeons
 		
-		for i in xrange(5):
+		for i in xrange(cfg.DUNGEONS):
 		
 			validLocation=False
 			pos=None
@@ -236,7 +236,6 @@ class Overworld:
 				pos=random.choice(self.pathable)
 				for entity in self.tile_entity:
 					if entity.position()==pos:
-						print "inval"
 						validLocation=False
 				
 			dungeon=OverworldTileEntity(pos[0],pos[1])

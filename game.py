@@ -25,8 +25,6 @@ class Game:
 			self.screens.addProgressCut("Fooing bar",
 				5,
 				libtcod.Color(random.randint(0,255), random.randint(0,255), random.randint(0,255)),
-				libtcod.Color(random.randint(0,255), random.randint(0,255), random.randint(0,255)),
-				libtcod.Color(random.randint(0,255), random.randint(0,255), random.randint(0,255)),
 				libtcod.Color(random.randint(0,255), random.randint(0,255), random.randint(0,255)))
 	
 	def game_loop(self):

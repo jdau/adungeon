@@ -9,6 +9,8 @@ class Config:
 	OW_HEIGHT=130
 	OW_TREE_THRES=0.2
 	
+	DUNGEONS=5
+	
 	WID2=0
 	HGT2=0
 	def __init__(self):

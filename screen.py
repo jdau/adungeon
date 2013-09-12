@@ -29,9 +29,6 @@ class ProgressScreen:
 	duration=0
 	elapsed=0
 	
-	barCol1=None
-	barCol2=None
-	
 	console=None
 	def __init__(self,text,duration,foreColor,clearColor):
 		self.text=text
@@ -39,14 +36,7 @@ class ProgressScreen:
 		self.foreColor=foreColor
 		self.clearColor=clearColor
 		
-	def setBarColors(self,barCol1,barCol2):
-		self.barCol1=barCol1
-		self.barCol2=barCol2
-		
 	def render(self):
-		if not self.barCol1 or not self.barCol2:
-			print "ProgressScreen has no bar color"
-			return
 		
 		libtcod.console_set_default_background(self.console,self.clearColor)
 		libtcod.console_set_default_foreground(self.console,self.foreColor)
@@ -86,9 +76,8 @@ class ScreenHandler:
 	def addTextCut(self,text,forecol,backcol):
 		self.cut=TextScreen(text,forecol,backcol)
 		
-	def addProgressCut(self,text,duration,forecol,backcol,barcol1,barcol2):
+	def addProgressCut(self,text,duration,forecol,backcol):
 		self.cut=ProgressScreen(text,duration,forecol,backcol)
-		self.cut.setBarColors(barcol1,barcol2)
 	
 	def clearCut(self):
 		self.cut=None
