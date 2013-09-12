@@ -125,8 +125,9 @@ class AIPlayer:
 				distRank[dst]=cd
 			
 			potentials=[]
+			dkKeys=sorted(distRank)
 			for i in xrange(int(searchEffort/2)):
-				potentials.append(distRank[distRank.keys()[i]])
+				potentials.append(distRank[dkKeys[i]])
 				#world.putThing(potentials[i][0],potentials[i][1])
 				
 			pselect=random.sample(potentials,pathEffort)
@@ -142,7 +143,7 @@ class AIPlayer:
 			# get closest path len - if it is very high compared to distance, reject and expand search
 			dkKeys=sorted(distRank)
 			if dkKeys[0] < distance*4:
-				ret=distRank[distRank.keys()[0]]
+				ret=distRank[dkKeys[0]]
 				goodPath=True
 				print "Successful search at pl",dkKeys[0],"distance",distance,"took",int(math.floor((time.time()-t0)*1000)),"ms"
 			else:
