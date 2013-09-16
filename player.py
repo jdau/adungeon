@@ -80,8 +80,8 @@ class AIPlayer:
 		# Scan in expanding circle outwards
 		distance=1
 		edge=1
-		searchEffort=190
-		pathEffort=6
+		searchEffort=20
+		pathEffort=2
 		
 		potentials=[]
 		edges=[1,2,3,4]
@@ -114,6 +114,7 @@ class AIPlayer:
 				edge=edge+2
 				
 				if distance>max(ww*2,wh*2):
+					if len(potentials): break
 					self.explored=True
 					return (False,False)
 			
@@ -128,11 +129,11 @@ class AIPlayer:
 			
 			potentials=[]
 			dkKeys=sorted(distRank)
-			for i in xrange(int(searchEffort/2)):
+			for i in xrange(min(searchEffort,len(dkKeys))):
 				potentials.append(distRank[dkKeys[i]])
 				#world.putThing(potentials[i][0],potentials[i][1])
 				
-			pselect=random.sample(potentials,pathEffort)
+			pselect=random.sample(potentials,min(pathEffort,len(dkKeys)))
 			distRank={}
 			if not self.pathMap: self.pathMap=world.getBlockedMap()
 			for cd in pselect:
@@ -154,7 +155,7 @@ class AIPlayer:
 			if dkKeys[0] < distance*4 and dkKeys[0]>0:
 				ret=distRank[dkKeys[0]]
 				goodPath=True
-				#print "Successful search at pl",dkKeys[0],"distance",distance,"took",int(math.floor((time.time()-t0)*1000)),"ms"
+				print "Successful search at pl",dkKeys[0],"distance",distance,"took",int(math.floor((time.time()-t0)*1000)),"ms"
 			else:
 				print "Rejected search at pl",dkKeys[0],"distance",distance,"took",int(math.floor((time.time()-t0)*1000)),"ms"
 		

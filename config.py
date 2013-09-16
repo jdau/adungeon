@@ -3,7 +3,7 @@ import math
 class Config:
 	SCREEN_WIDTH = 40
 	SCREEN_HEIGHT = 30
-	FPS=5
+	FPS=40
 	
 	OW_WIDTH=200
 	OW_HEIGHT=130
