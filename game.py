@@ -12,7 +12,7 @@ class Game:
 	screens=None
 
 	def init_graphics(self):
-		libtcod.console_set_custom_font("annchrome.png",libtcod.FONT_LAYOUT_ASCII_INROW)
+		#libtcod.console_set_custom_font("annchrome.png",libtcod.FONT_LAYOUT_ASCII_INROW)
 		libtcod.console_init_root(cfg.SCREEN_WIDTH, cfg.SCREEN_HEIGHT, 'libtcod', False)
 		libtcod.sys_set_fps(cfg.FPS)
 	

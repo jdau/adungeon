@@ -160,6 +160,7 @@ class Overworld:
 		self.tile_entity.append(thing)
 		
 	def findPathable(self):
+		self.pathable=[]
 		w=self.width
 		h=self.height
 		start=(random.randint(1,w-1),random.randint(1,h-1))
@@ -168,15 +169,16 @@ class Overworld:
 		openlist=[]
 		openlist.append(start)
 		self.pathable.append(start)
-		rels=((1,1),(1,-1),(-1,1),(-1,-1))
+		#rels=((1,1),(1,-1),(-1,1),(-1,-1))
+		rels=((0,1),(0,-1),(-1,0),(1,0))
 		
 		while len(openlist):
 			newlist=copy.copy(openlist)
 			for coord in openlist:
 				for rel in rels:
 					crd=(coord[0]+rel[0],coord[1]+rel[1])
-					if crd[0]<0 or crd[0]>=w or crd[1]<0 or crd[1]>=h: break
-					if self.level[crd[0]][crd[1]].isBlocked(): break
+					if crd[0]<0 or crd[0]>=w or crd[1]<0 or crd[1]>=h: continue
+					if self.level[crd[0]][crd[1]].isBlocked(): continue
 					
 					if crd not in self.pathable:
 						newlist.append(crd)
@@ -184,6 +186,15 @@ class Overworld:
 				newlist.remove(coord)
 				
 			openlist=copy.copy(newlist)
+			
+	def clearUnpathableAreas(self):
+		w=self.width
+		h=self.height
+		for x in xrange(w):
+			for y in xrange(h):
+				if self.level[x][y].blocked: continue
+				if not (x,y) in self.pathable:
+					self.level[x][y].setBlocked(True)
 		
 	def create(self):
 		w=self.width=cfg.OW_WIDTH
@@ -202,20 +213,21 @@ class Overworld:
 				zoom=0.09
 				f = [zoom * x,zoom * y]
 				val = libtcod.noise_get(noise2d,f)
-				c=60+int(((val+1)/2)*90)
 				c1=int((((val*-1)+1)/2)*30)
 				c2=10+int(((val+1)/2)*20)
 				
 				if val>th:				
 					self.level[x][y].setChar(23)
-					self.level[x][y].setColors(libtcod.Color(0, c, 0),libtcod.Color(0, c2, 0))
+					self.level[x][y].setColors(libtcod.Color(0, 200, 0),libtcod.Color(0, 0, 0))
 					self.level[x][y].setBlocked(True)
 				else:
 					self.level[x][y].setChar(176)
 					self.level[x][y].setColors(libtcod.Color(0, c1, 0),libtcod.Color(0, c2, 0))
 		
-		while len(self.pathable) < 200:
-			self.findPathable()
+		
+		while len(self.pathable)<400: self.findPathable()
+		self.clearUnpathableAreas()
+		#self.findPathable() # Now a final scan for the full area
 			
 		# Place town
 		

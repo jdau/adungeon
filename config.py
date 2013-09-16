@@ -9,7 +9,7 @@ class Config:
 	OW_HEIGHT=130
 	OW_TREE_THRES=0.2
 	
-	DUNGEONS=5
+	DUNGEONS=10
 	
 	WID2=0
 	HGT2=0

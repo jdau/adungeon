@@ -80,8 +80,8 @@ class AIPlayer:
 		# Scan in expanding circle outwards
 		distance=1
 		edge=1
-		searchEffort=150
-		pathEffort=4
+		searchEffort=190
+		pathEffort=6
 		
 		potentials=[]
 		edges=[1,2,3,4]
@@ -96,8 +96,8 @@ class AIPlayer:
 						if cx<0 or cx>=ww: continue
 						if cy<0 or cy>=wh: continue
 						if world.isBlocked(cx,cy) or world.isSeen(cx,cy): continue
-						if world.isPathable(cx,cy):
-							potentials.append((cx,cy))
+						#if world.isPathable(cx,cy):
+						potentials.append((cx,cy))
 							#world.putThing(cx,cy)
 							
 				# and corners
@@ -106,17 +106,19 @@ class AIPlayer:
 					if cx<0 or cx>=ww: continue
 					if cy<0 or cy>=wh: continue
 					if world.isBlocked(cx,cy) or world.isSeen(cx,cy): continue
-					if world.isPathable(cx,cy):
-						potentials.append((cx,cy))
+					#if world.isPathable(cx,cy):
+					potentials.append((cx,cy))
 						#world.putThing(cx,cy)
 						
 				distance=distance+1
 				edge=edge+2
 				
-				if distance>max(ww,wh):
+				if distance>max(ww*2,wh*2):
 					self.explored=True
 					return (False,False)
 			
+			
+			#print len(potentials)
 			# now pop random for effort amount and pick shortest path
 			distRank={}
 			for cd in potentials:
@@ -138,14 +140,21 @@ class AIPlayer:
 				path=libtcod.path_new_using_map(self.pathMap,0)
 				libtcod.path_compute(path,self.x,self.y,cd[0],cd[1])
 				ps=libtcod.path_size(path)
+				if ps==0: 
+					print "Zero-len path:",cd,px,py
+					print "Is blocked:",world.isBlocked(cd[0],cd[1])
+					print "Is pathable:",world.isPathable(cd[0],cd[1])
+					print "Is seen:",world.isSeen(cd[0],cd[1])
+				
+				while ps in distRank: ps=ps+1
 				distRank[ps]=(cd,path)
 			
 			# get closest path len - if it is very high compared to distance, reject and expand search
 			dkKeys=sorted(distRank)
-			if dkKeys[0] < distance*4:
+			if dkKeys[0] < distance*4 and dkKeys[0]>0:
 				ret=distRank[dkKeys[0]]
 				goodPath=True
-				print "Successful search at pl",dkKeys[0],"distance",distance,"took",int(math.floor((time.time()-t0)*1000)),"ms"
+				#print "Successful search at pl",dkKeys[0],"distance",distance,"took",int(math.floor((time.time()-t0)*1000)),"ms"
 			else:
 				print "Rejected search at pl",dkKeys[0],"distance",distance,"took",int(math.floor((time.time()-t0)*1000)),"ms"
 		
@@ -156,8 +165,14 @@ class AIPlayer:
 		if not self.goal:
 			[self.goal,self.path] = self.findExplorePoint(world)
 			if not self.goal:
+				path=world.getPathable()
 				self.explored=True
-				print "All done"
+				unseen=0
+				for n in path:
+					if not world.isSeen(n[0],n[1]):unseen=unseen+1
+				
+				print "Exploration done,",unseen,"unseen tiles"
+				
 				return
 			self.path_progress=0
 		
