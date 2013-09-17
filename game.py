@@ -3,6 +3,7 @@ from config import *
 
 
 from overworld import *
+from dungeon import *
 from screen import *
 from player import *
 
@@ -10,9 +11,12 @@ class Game:
 
 	shutdown=False
 	screens=None
+	
+	overworld=None
+	dungeon=None
 
 	def init_graphics(self):
-		#libtcod.console_set_custom_font("annchrome.png",libtcod.FONT_LAYOUT_ASCII_INROW)
+		libtcod.console_set_custom_font("annchrome.png",libtcod.FONT_LAYOUT_ASCII_INROW)
 		libtcod.console_init_root(cfg.SCREEN_WIDTH, cfg.SCREEN_HEIGHT, 'libtcod', False)
 		libtcod.sys_set_fps(cfg.FPS)
 	
@@ -29,18 +33,22 @@ class Game:
 	
 	def game_loop(self):
 		
-		world=Overworld()
-		self.screens=ScreenHandler(world)
+		self.overworld=Overworld()
+		self.dungeon=Dungeon()
+		
+		self.screens=ScreenHandler(self.dungeon)
 		self.screens.addTextCut("Generating world...",libtcod.green,libtcod.black)
 		
 		self.screens.tick()
 		self.handle_keys()
 		libtcod.console_flush()
 		
-		world.create()
+		#self.overworld.create()
+		self.dungeon.create()
 		
 		player=AIPlayer()
-		world.playerStart(player)
+		#self.overworld.playerStart(player)
+		self.dungeon.playerStart(player)
 		
 		self.screens.clearCut()
 		cycles=0
@@ -48,7 +56,8 @@ class Game:
 		while not libtcod.console_is_window_closed(): 
 			
 			if self.screens.tick():
-				player.tick(world)
+				#player.tick(self.overworld)
+				player.tick(self.dungeon)
 				
 			self.handle_keys()
 			if self.shutdown: break

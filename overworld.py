@@ -80,8 +80,6 @@ class Overworld:
 	tile_entity=[]
 	town=None
 	
-	def halfScreenWidth(self): return int(math.floor(cfg.SCREEN_WIDTH/2))
-	
 	def render(self):
 		c=self.console
 		libtcod.console_clear(c)

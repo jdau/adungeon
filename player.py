@@ -80,8 +80,8 @@ class AIPlayer:
 		# Scan in expanding circle outwards
 		distance=1
 		edge=1
-		searchEffort=20
-		pathEffort=2
+		searchEffort=60
+		pathEffort=3
 		
 		potentials=[]
 		edges=[1,2,3,4]
