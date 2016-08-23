@@ -1,6 +1,8 @@
 import libtcodpy as libtcod
 from config import *
 
+# Test change
+
 class TextScreen:
 	foreColor=None
 	clearColor=None
